@@ -20,7 +20,11 @@ namespace myWebApp
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.ConfigureKestrel(serverOptions =>
+                    {
+                        serverOptions.AllowSynchronousIO = true;
+                    })
+                    .UseStartup<Startup>();
                 });
     }
 }

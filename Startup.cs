@@ -7,7 +7,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Hosting;
+using myWebApp.Interfaces;
+using myWebApp.Services;
+using myWebApp.MiddleWare;
+
 
 namespace myWebApp
 {
@@ -24,7 +29,8 @@ namespace myWebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddScoped<CacheAttribute>();
+            services.AddSingleton<ICurrentTime, CurrentTime>();
+            services.AddSingleton<IMySingletonCache, MySingletonCache>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,10 +48,10 @@ namespace myWebApp
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthorization();
+
+            app.UseHtmlCache();
 
             app.UseEndpoints(endpoints =>
             {

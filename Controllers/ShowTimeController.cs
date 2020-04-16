@@ -1,14 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Encodings.Web;
+using myWebApp.Interfaces;
 
-namespace MvcMovie.Controllers
+namespace myWebApp.Controllers
 {
     public class ShowTimeController : Controller
     {
-        [ServiceFilter(typeof(CacheAttribute))]
+        private ICurrentTime _iCurrentTime { get; set; }
+        public ShowTimeController(ICurrentTime iCurrentTime)
+        {
+            _iCurrentTime = iCurrentTime;
+        }
+
+        [RedirectAttribute("User-Agent", "Mobile", "http://www.baidu.com")]
+        [CacheAttribute("text/html; charset=utf-8", "/ShowTime")]
         public IActionResult Index()
         {
-            ViewData["time"] = System.DateTime.Now.ToString();
+            ViewData["time"] = _iCurrentTime.GetTime().ToString();
             return View();
         }
     }

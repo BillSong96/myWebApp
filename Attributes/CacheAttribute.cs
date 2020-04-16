@@ -1,37 +1,36 @@
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using myWebApp.Interfaces;
+using myWebApp.Services;
 using System;
-
 
 public class CacheAttribute : ActionFilterAttribute
 {
-    private static IMemoryCache cache = new MemoryCache(new MemoryCacheOptions());
+    private IMySingletonCache _MySingletonCache = new MySingletonCache(new MemoryCache(new MemoryCacheOptions()));
 
-    private bool flag;
-    
-    public int remainTime { get; set; } = 5;
-    
-    private string key { get; set; }
+    private string _ContentType;
+
+    private string _Key;
+
+    public CacheAttribute(string ContentType, string Key)
+    {
+        _ContentType = ContentType;
+        _Key = Key;
+    }
 
     public override void OnActionExecuting(ActionExecutingContext context)
     {
-        key = $"{context.HttpContext.Request.Scheme}://{context.HttpContext.Request.Host.ToString()}{context.HttpContext.Request.PathBase}{context.HttpContext.Request.Path}{context.HttpContext.Request.QueryString.ToString()}";
-        dynamic obj = cache.Get(key);
-        if (flag = obj != null) context.Result = obj;
+        if (_MySingletonCache.TryGetValue<string>(_Key, out string htmlCache))
+        {
+            context.Result = new ContentResult() { Content = htmlCache, ContentType = _ContentType };
+            return;
+        }
+        base.OnActionExecuting(context);
     }
 
     public override void OnActionExecuted(ActionExecutedContext context)
     {
-
-    }
-
-    public override void OnResultExecuting(ResultExecutingContext context)
-    {
-        if (!flag) cache.Set<object>(key, context.Result, DateTime.Now.AddSeconds(remainTime));
-    }
-
-    public override void OnResultExecuted(ResultExecutedContext context)
-    {
-
+        
     }
 }

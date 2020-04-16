@@ -37,3 +37,4 @@ C:\Users\songz\myWebApp\obj\Debug\netcoreapp3.1\myWebApp.genruntimeconfig.cache
 C:\Users\songz\myWebApp\obj\Debug\netcoreapp3.1\myWebApp.csproj.CopyComplete
 C:\Users\songz\myWebApp\obj\Debug\netcoreapp3.1\Razor\Views\HelloWorld\Index.cshtml.g.cs
 C:\Users\songz\myWebApp\obj\Debug\netcoreapp3.1\Razor\Views\ShowTime\Index.cshtml.g.cs
+C:\Users\songz\myWebApp\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
