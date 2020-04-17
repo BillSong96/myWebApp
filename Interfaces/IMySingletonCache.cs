@@ -4,7 +4,7 @@ namespace myWebApp.Interfaces
 {
     public interface IMySingletonCache
     {
-        bool TryGetValue<T>(String key, out T t);
-        void SetNX<T>(String key, T value, DateTimeOffset timeOffset);
+        bool TryGetValue<T>(string key, out T t);
+        void SetNX<T>(string key, T value, DateTimeOffset timeOffset);
     }
 }
