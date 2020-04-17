@@ -17,7 +17,8 @@ public class CacheAttribute : ActionFilterAttribute
     public override void OnActionExecuting(ActionExecutingContext context)
     {
         IMySingletonCache mySingletonCache = (IMySingletonCache) context.HttpContext.RequestServices.GetService(typeof(IMySingletonCache));
-        if (mySingletonCache.TryGetValue<string>(_key, out string htmlCache))
+        IWhiteList whiteList = (IWhiteList) context.HttpContext.RequestServices.GetService(typeof(IWhiteList));
+        if (whiteList.contains(_key) && mySingletonCache.TryGetValue<string>(_key, out string htmlCache))
         {
             context.Result = new ContentResult() { Content = htmlCache, ContentType = _contentType };
             return;

@@ -8,22 +8,19 @@ namespace myWebApp.Services
     {
         private IMemoryCache _myCache;
 
-        private IWhiteList _whiteList;
-
-        public MySingletonCache(IMemoryCache myCache, IWhiteList whiteList)
+        public MySingletonCache(IMemoryCache myCache)
         {
             _myCache = myCache;
-            _whiteList = whiteList;
         }
 
         public bool TryGetValue<T>(string key, out T t)
         {
-            return _myCache.TryGetValue<T>(key, out t) && _whiteList.contains(key);
+            return _myCache.TryGetValue<T>(key, out t);
         }
 
         public void SetNX<T>(string key, T value, DateTimeOffset timeOffset)
         {
-            if (!_myCache.TryGetValue<T>(key, out T t) && _whiteList.contains(key)) {
+            if (!_myCache.TryGetValue<T>(key, out T t)) {
                 _myCache.Set<T>(key, value, timeOffset);
             }
         }
