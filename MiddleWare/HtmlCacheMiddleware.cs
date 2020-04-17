@@ -31,7 +31,6 @@ namespace myWebApp.MiddleWare
             }
             context.Response.OnCompleted(() =>
             {
-                Console.WriteLine(UrlPathRefractor(context.Request.Path.ToString().ToLower()));
                 _mySingletonCache.SetNX<string>(context.Request.Path.ToString().ToLower(), html, DateTime.Now.AddSeconds(5));
                 return Task.CompletedTask;
             });
