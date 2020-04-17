@@ -1,29 +1,25 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using myWebApp.Interfaces;
-using myWebApp.Services;
-using System;
 
 public class CacheAttribute : ActionFilterAttribute
 {
-    private IMySingletonCache _MySingletonCache = new MySingletonCache(new MemoryCache(new MemoryCacheOptions()));
+    private string _contentType;
 
-    private string _ContentType;
+    private string _key;
 
-    private string _Key;
-
-    public CacheAttribute(string ContentType, string Key)
+    public CacheAttribute(string contentType, string key)
     {
-        _ContentType = ContentType;
-        _Key = Key;
+        _contentType = contentType;
+        _key = key;
     }
 
     public override void OnActionExecuting(ActionExecutingContext context)
     {
-        if (_MySingletonCache.TryGetValue<string>(_Key, out string htmlCache))
+        IMySingletonCache mySingletonCache = (IMySingletonCache) context.HttpContext.RequestServices.GetService(typeof(IMySingletonCache));
+        if (mySingletonCache.TryGetValue<string>(_key, out string htmlCache))
         {
-            context.Result = new ContentResult() { Content = htmlCache, ContentType = _ContentType };
+            context.Result = new ContentResult() { Content = htmlCache, ContentType = _contentType };
             return;
         }
         base.OnActionExecuting(context);

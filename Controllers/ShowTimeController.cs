@@ -5,17 +5,17 @@ namespace myWebApp.Controllers
 {
     public class ShowTimeController : Controller
     {
-        private ICurrentTime _iCurrentTime { get; set; }
-        public ShowTimeController(ICurrentTime iCurrentTime)
+        private ICurrentTime _currentTime { get; set; }
+        public ShowTimeController(ICurrentTime currentTime)
         {
-            _iCurrentTime = iCurrentTime;
+            _currentTime = currentTime;
         }
 
         [RedirectAttribute("User-Agent", "Mobile", "http://www.baidu.com")]
-        [CacheAttribute("text/html; charset=utf-8", "/ShowTime")]
+        [CacheAttribute("text/html; charset=utf-8", "/showtime/index")]
         public IActionResult Index()
         {
-            ViewData["time"] = _iCurrentTime.GetTime().ToString();
+            ViewData["time"] = _currentTime.GetTime().ToString();
             return View();
         }
     }

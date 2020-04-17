@@ -31,6 +31,7 @@ namespace myWebApp
             services.AddControllersWithViews();
             services.AddSingleton<ICurrentTime, CurrentTime>();
             services.AddSingleton<IMySingletonCache, MySingletonCache>();
+            services.AddSingleton<IWhiteList, CacheWhiteList>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

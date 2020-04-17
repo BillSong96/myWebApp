@@ -1,15 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Routing;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 using myWebApp.Interfaces;
-using System.Diagnostics;
-
-
 
 namespace myWebApp.MiddleWare
 {
@@ -17,12 +11,12 @@ namespace myWebApp.MiddleWare
     {
         private readonly RequestDelegate _next;
 
-        private IMySingletonCache _IMySingletonCache;
+        private IMySingletonCache _mySingletonCache;
 
-        public HtmlCacheMiddleware(RequestDelegate next, IMySingletonCache IMySingletonCache)
+        public HtmlCacheMiddleware(RequestDelegate next, IMySingletonCache MySingletonCache)
         {
             _next = next;
-            _IMySingletonCache = IMySingletonCache;
+            _mySingletonCache = MySingletonCache;
         }
         public async Task Invoke(HttpContext context)
         {
@@ -37,7 +31,8 @@ namespace myWebApp.MiddleWare
             }
             context.Response.OnCompleted(() =>
             {
-                _IMySingletonCache.SetNX<string>(context.Request.Path, html, DateTime.Now.AddSeconds(5));
+                Console.WriteLine(UrlPathRefractor(context.Request.Path.ToString().ToLower()));
+                _mySingletonCache.SetNX<string>(context.Request.Path.ToString().ToLower(), html, DateTime.Now.AddSeconds(5));
                 return Task.CompletedTask;
             });
         }
@@ -48,6 +43,15 @@ namespace myWebApp.MiddleWare
             var text = await new StreamReader(response.Body).ReadToEndAsync();
             response.Body.Seek(0, SeekOrigin.Begin);
             return text;
+        }
+
+        private string UrlPathRefractor(string urlPath)
+        {
+            if (urlPath.LastIndexOf("/") <= 0) {
+                if (urlPath.Equals("") || urlPath.Equals("/")) return "/home/index";
+                return $"{urlPath}/index";
+            }
+            return urlPath;
         }
     }
 
